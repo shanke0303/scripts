@@ -1,4 +1,5 @@
 /*
+自动提交助力码，删除内置助力码
 Last Modified time: 2020-12-26 22:58:02
 东东工厂，不是京喜工厂
 活动入口：京东APP首页-数码电器-东东工厂
@@ -46,7 +47,8 @@ if ($.isNode()) {
 }
 let wantProduct = ``;//心仪商品名称
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
-const inviteCodes = [''];
+const inviteCodes = [];
+let myInviteCode;
 !(async () => {
   await requireConfig();
   if (!cookiesArr[0]) {
@@ -447,6 +449,13 @@ function jdfactory_getTaskDetail() {
               $.taskVos.map(item => {
                 if (item.taskType === 14) {
                   console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${item.assistTaskDetailVo.taskToken}\n`)
+                  myInviteCode = item.assistTaskDetailVo.taskToken;
+                  const submitCodeRes = await submitCode();
+                  if (submitCodeRes && submitCodeRes.code === 200) {
+                      console.log(`🏭东东工厂-互助码提交成功！🏭`);
+                  }else if (submitCodeRes.code === 300) {
+                      console.log(`🏭东东工厂-互助码已提交！🏭`);
+                  }
                 }
               })
             }
@@ -619,7 +628,7 @@ function jdfactory_getHomeData() {
 function readShareCode() {
   console.log(`开始`)
   return new Promise(async resolve => {
-    $.get({url: `http://api.sharecode.ga/api/ddfactory/${randomCount}`, timeout: 10000}, (err, resp, data) => {
+    $.get({url: `http://www.helpu.cf/jdcodes/getcode.php?type=ddfactory&num=${randomCount}`, timeout: 10000}, (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -637,6 +646,30 @@ function readShareCode() {
       }
     })
     await $.wait(10000);
+    resolve()
+  })
+}
+//提交互助码
+function submitCode() {
+    return new Promise(async resolve => {
+    $.get({url: `http://www.helpu.cf/jdcodes/submit.php?code=${myInviteCode}&type=ddfactory`, timeout: 10000}, (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
+        } else {
+          if (data) {
+            //console.log(`随机取个${randomCount}码放到您固定的互助码后面(不影响已有固定互助)`)
+            data = JSON.parse(data);
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve(data);
+      }
+    })
+    await $.wait(15000);
     resolve()
   })
 }
