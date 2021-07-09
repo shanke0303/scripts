@@ -1357,7 +1357,7 @@ function submitCode() {
       }
     })
     await $.wait(15000);
-    resolve()
+    resolve({code: 500})
   })
 }
 //格式化助力码

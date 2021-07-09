@@ -419,8 +419,7 @@ function submitCode() {
     })
 
     await $.wait(15000);
-
-    resolve()
+    resolve({code: 500})
 
   })
 
