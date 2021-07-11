@@ -601,7 +601,7 @@ function userInfo() {
                 const submitCodeRes = await submitCode(data.user.encryptPin);
                 if (submitCodeRes && submitCodeRes.code === 200) {
                   console.log(`🏭京喜工厂-互助码提交成功！🏭`);
-                }else if (submitCodeRes.code === 300) {
+                }else if (submitCodeRes && submitCodeRes.code === 300) {
                   console.log(`🏭京喜工厂-互助码已提交！🏭`);
                 }
                 console.log(`已投入电力：${production.investedElectric}`);
@@ -1356,8 +1356,6 @@ function submitCode() {
         resolve(data);
       }
     })
-    await $.wait(15000);
-    resolve({code: 500})
   })
 }
 //格式化助力码

@@ -147,7 +147,7 @@ function index(info=false) {
               const submitCodeRes = await submitCode();
               if (submitCodeRes && submitCodeRes.code === 200) {
                 console.log(`💰签到领现金-互助码提交成功！💰`);
-              }else if (submitCodeRes.code === 300) {
+              }else if (submitCodeRes && submitCodeRes.code === 300) {
                 console.log(`💰签到领现金-互助码已提交！💰`);
               }
               // $.log(`shareDate: ${$.shareDate}`)
@@ -417,9 +417,6 @@ function submitCode() {
       }
 
     })
-
-    await $.wait(15000);
-    resolve({code: 500})
 
   })
 

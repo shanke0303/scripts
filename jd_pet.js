@@ -126,7 +126,7 @@ async function jdPet() {
       const submitCodeRes = await submitCode();
       if (submitCodeRes && submitCodeRes.code === 200) {
          console.log(`🐶东东萌宠-互助码提交成功！🐶`);
-      }else if (submitCodeRes.code === 300) {
+      }else if (submitCodeRes && submitCodeRes.code === 300) {
          console.log(`🐶东东萌宠-互助码已提交！🐶`);
       }
       await taskInit();
@@ -501,8 +501,6 @@ function submitCode() {
         resolve(data);
       }
     })
-    await $.wait(15000);
-    resolve({code: 500})
   })
 }
 function shareCodesFormat() {

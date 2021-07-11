@@ -120,7 +120,7 @@ function interact_template_getHomeData(timeout = 0) {
               const submitCodeRes = await submitCode();
               if (submitCodeRes && submitCodeRes.code === 200) {
                 console.log(`📦闪购盲盒-互助码提交成功！📦`);
-              }else if (submitCodeRes.code === 300) {
+              }else if (submitCodeRes && submitCodeRes.code === 300) {
                 console.log(`📦闪购盲盒-互助码已提交！📦`);
               }
               for (let code of $.newShareCodes) {
@@ -364,8 +364,6 @@ function submitCode() {
         resolve(data);
       }
     })
-    await $.wait(15000);
-    resolve({code: 500})
   })
 }
 function TotalBean() {
