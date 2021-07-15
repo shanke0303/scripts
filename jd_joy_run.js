@@ -39,8 +39,8 @@ http-request ^https:\/\/draw\.jdfcloud\.com(\/mirror)?\/\/api\/user\/user\/detai
 */
 const $ = new Env('宠汪汪赛跑');
 const zooFaker = require('./JDJRValidator_Pure');
-$.get = zooFaker.injectToRequest2($.get.bind($));
-$.post = zooFaker.injectToRequest2($.post.bind($));
+// $.get = zooFaker.injectToRequest2($.get.bind($));
+// $.post = zooFaker.injectToRequest2($.post.bind($));
 //宠汪汪赛跑所需token，默认读取作者服务器的
 //需自行抓包，宠汪汪小程序获取token，点击`发现`或`我的`，寻找`^https:\/\/draw\.jdfcloud\.com(\/mirror)?\/\/api\/user\/user\/detail\?openId=`获取token
 let jdJoyRunToken = '';
@@ -131,7 +131,7 @@ async function main() {
     if (cookiesArr[i]) {
       $.validate = '';
       // const zooFaker = require('./utils/JDJRValidator_Pure');
-      // $.validate = await zooFaker.injectToRequest()
+      $.validate = await zooFaker.injectToRequest()
       if ($.isNode()) {
         if (process.env.JOY_RUN_HELP_MYSELF) {
           console.log(`\n赛跑会先给账号内部助力,如您当前账户有剩下助力机会则为lx0301作者助力\n`)
