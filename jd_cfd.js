@@ -67,7 +67,6 @@ $.appId = 10028;
       $.index = i + 1;
       $.nickName = '';
       $.isLogin = true;
-      $.nickName = '';
       await TotalBean();
       console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
       if (!$.isLogin) {
@@ -216,6 +215,27 @@ async function cfd() {
     } else {
       console.log(`当前暂无收藏家\n`)
     }
+    
+    //美人鱼
+    console.log(`美人鱼`)
+    if ($.info.StoryInfo.StoryList) {
+      await $.wait(2000)
+      for (let key of Object.keys($.info.StoryInfo.StoryList)) {
+        let vo = $.info.StoryInfo.StoryList[key]
+        if (vo.Mermaid) {
+          if (vo.Mermaid.dwIsToday === 1) {
+            console.log(`可怜的美人鱼困在沙滩上了，快去解救他吧~`)
+            await mermaidOper(vo.strStoryId, '1', vo.ddwTriggerDay)
+          } else if (vo.Mermaid.dwIsToday === 0) {
+            await mermaidOper(vo.strStoryId, '4', vo.ddwTriggerDay)
+          }
+        } else {
+          console.log(`当前暂无美人鱼\n`)
+        }
+      }
+    } else {
+      console.log(`当前暂无美人鱼\n`)
+    }
 
     //倒垃圾
     await $.wait(2000)
@@ -226,6 +246,10 @@ async function cfd() {
     await employTourGuideInfo();
 
     console.log(`\n做任务`)
+    //牛牛任务
+    await $.wait(2000)
+    await getActTask()
+    
     //日常任务
     await $.wait(2000);
     await getTaskList(0);
@@ -427,6 +451,58 @@ function collectorOper(strStoryId, dwType, ddwTriggerDay) {
   })
 }
 
+// 美人鱼
+async function mermaidOper(strStoryId, dwType, ddwTriggerDay) {
+  return new Promise(async (resolve) => {
+    $.get(taskUrl(`story/MermaidOper`, `strStoryId=${strStoryId}&dwType=${dwType}&ddwTriggerDay=${ddwTriggerDay}`), async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} MermaidOper API请求失败，请检查网路重试`)
+        } else {
+          data = JSON.parse(data);
+          switch (dwType) {
+            case '1':
+              if (data.iRet === 0 || data.sErrMsg === 'success') {
+                console.log(`开始解救美人鱼`)
+                dwType = '3'
+                await mermaidOper(strStoryId, dwType, ddwTriggerDay)
+                await $.wait(2000)
+              } else {
+                console.log(`开始解救美人鱼失败：${data.sErrMsg}\n`)
+              }
+              break
+            case '2':
+              break
+            case '3':
+              if (data.iRet === 0 || data.sErrMsg === 'success') {
+                dwType = '2'
+                let mermaidOperRes = await mermaidOper(strStoryId, dwType, ddwTriggerDay)
+                console.log(`解救美人鱼成功：获得${mermaidOperRes.Data.ddwCoin || '0'}金币\n`)
+              } else {
+                console.log(`解救美人鱼失败：${data.sErrMsg}\n`)
+              }
+              break
+            case '4':
+              if (data.iRet === 0 || data.sErrMsg === 'success') {
+                console.log(`昨日解救美人鱼领奖成功：获得${data.Data.Prize.strPrizeName}\n`)
+              } else {
+                console.log(`昨日解救美人鱼领奖失败：${data.sErrMsg}\n`)
+              }             
+              break
+            default:
+              break
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve(data);
+      }
+    })
+  })
+}
+
 // 卖贝壳
 async function querystorageroom() {
   return new Promise(async (resolve) => {
@@ -603,7 +679,11 @@ function helpdraw(dwUserId) {
         } else {
           data = JSON.parse(data);
           if (data.iRet === 0 || data.sErrMsg === "success") {
-            console.log(`领取助力奖励成功：获得${data.Data.ddwCoin}金币`)
+            if (data.Data.StagePrizeInfo) {
+              console.log(`领取助力奖励成功：获得${data.Data.ddwCoin}金币 ${data.Data.StagePrizeInfo.ddwMoney}财富 ${data.Data.StagePrizeInfo.strPrizeName && !data.Data.StagePrizeInfo.ddwMoney || `0元`}红包`)
+            } else {
+              console.log(`领取助力奖励成功：获得${data.Data.ddwCoin}金币`)
+            }
           } else {
             console.log(`领取助力奖励失败：${data.sErrMsg}`)
           }
@@ -631,23 +711,32 @@ async function queryRubbishInfo() {
           if (data.Data.StoryInfo.StoryList.length !== 0) {
             for (let key of Object.keys(data.Data.StoryInfo.StoryList)) {
               let vo = data.Data.StoryInfo.StoryList[key]
-              if (vo.Rubbish && vo.Rubbish.dwIsFirstGame === 1) {
-                console.log(`获取到垃圾信息：次数 1/2`)
+              if (vo.Rubbish) {
                 await $.wait(2000)
                 let rubbishOperRes = await rubbishOper('1')
-                for (let key of Object.keys(rubbishOperRes.Data.ThrowRubbish.Game.RubbishList)) {
-                  let vo = rubbishOperRes.Data.ThrowRubbish.Game.RubbishList[key]
-                  await $.wait(2000)
-                  var rubbishOperTwoRes = await rubbishOper('2', `dwRubbishId=${vo.dwId}`)
-                }
-                if (rubbishOperTwoRes.iRet === 0) {
-                  let AllRubbish = rubbishOperTwoRes.Data.RubbishGame.AllRubbish
-                  console.log(`倒垃圾成功：获得${AllRubbish.ddwCoin}金币 ${AllRubbish.ddwMoney}财富\n`)
+                if (Object.keys(rubbishOperRes.Data.ThrowRubbish.Game).length) {
+                  console.log(`获取垃圾信息成功：本次需要垃圾分类`)
+                  for (let key of Object.keys(rubbishOperRes.Data.ThrowRubbish.Game.RubbishList)) {
+                    let vo = rubbishOperRes.Data.ThrowRubbish.Game.RubbishList[key]
+                    await $.wait(2000)
+                    var rubbishOperTwoRes = await rubbishOper('2', `dwRubbishId=${vo.dwId}`)
+                  }
+                  if (rubbishOperTwoRes.iRet === 0) {
+                    let AllRubbish = rubbishOperTwoRes.Data.RubbishGame.AllRubbish
+                    console.log(`倒垃圾成功：获得${AllRubbish.ddwCoin}金币 ${AllRubbish.ddwMoney}财富\n`)
+                  } else {
+                    console.log(`倒垃圾失败：${rubbishOperTwoRes.sErrMsg}\n`)
+                  }
                 } else {
-                  console.log(`倒垃圾失败：${rubbishOperTwoRes.sErrMsg}\n`)
+                  console.log(`获取垃圾信息成功：本次不需要垃圾分类`)
+                  if (rubbishOperRes.iRet === 0 || rubbishOperRes.sErrMsg === "success") {
+                    console.log(`倒垃圾成功：获得${rubbishOperRes.Data.ThrowRubbish.ddwCoin}金币\n`)
+                  } else {
+                    console.log(`倒垃圾失败：${rubbishOperRes.sErrMsg}\n`)
+                  }
                 }
               } else {
-                console.log(`当前暂无垃圾：完成次数 1/2\n`)
+                console.log(`当前暂无垃圾\n`)
               }
             }
           } else {
@@ -703,7 +792,7 @@ function rubbishOper(dwType, body = '') {
   })
 }
 
-// 每日任务领奖
+// 牛牛任务
 async function getActTask() {
   return new Promise(async (resolve) => {
     $.get(taskUrl(`story/GetActTask`), async (err, resp, data) => {
@@ -716,9 +805,16 @@ async function getActTask() {
           for (let key of Object.keys(data.Data.TaskList)) {
             let vo = data.Data.TaskList[key]
             if (vo.dwCompleteNum >= vo.dwTargetNum && vo.dwAwardStatus !== 1) {
-              await awardActTask(vo)
+              await awardActTask('Award', vo)
               await $.wait(2000)
             }
+          }
+          if (data.Data.dwCompleteTaskNum >= data.Data.dwTotalTaskNum && data.Data.dwStatus !== 4) {
+            console.log(`【🐮牛牛任务】已做完，去开启宝箱`)
+            await awardActTask('story/ActTaskAward')
+            await $.wait(2000)
+          } else {
+            console.log(`【🐮牛牛任务】已做完，宝箱已开启`)
           }
         }
       } catch (e) {
@@ -729,30 +825,57 @@ async function getActTask() {
     })
   })
 }
-function awardActTask(taskInfo) {
+function awardActTask(function_path, taskInfo = '') {
   const { ddwTaskId, strTaskName} = taskInfo
   return new Promise((resolve) => {
-    $.get(taskListUrl(`Award`, `taskId=${ddwTaskId}`, 'jxbfddch'), (err, resp, data) => {
-      try {
-        if (err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} awardActTask API请求失败，请检查网路重试`)
-        } else {
-          const {msg, ret, data: {prizeInfo = ''} = {}} = JSON.parse(data);
-          let str = '';
-          if (msg.indexOf('活动太火爆了') !== -1) {
-            str = '任务为成就任务或者未到任务时间';
-          } else {
-            str = msg + prizeInfo ? ` 获得金币 ¥ ${JSON.parse(prizeInfo).ddwCoin}` : '';
+    switch (function_path) {
+      case 'Award':
+        $.get(taskListUrl(function_path, `taskId=${ddwTaskId}`, 'jxbfddch'), (err, resp, data) => {
+          try {
+            if (err) {
+              console.log(`${JSON.stringify(err)}`)
+              console.log(`${$.name} awardActTask API请求失败，请检查网路重试`)
+            } else {
+              const {msg, ret, data: {prizeInfo = ''} = {}} = JSON.parse(data);
+              let str = '';
+              if (msg.indexOf('活动太火爆了') !== -1) {
+                str = '任务为成就任务或者未到任务时间';
+              } else {
+                str = msg + prizeInfo ? ` 获得金币 ¥ ${JSON.parse(prizeInfo).ddwCoin}` : '';
+              }
+              console.log(`【🐮领牛牛任务奖励】${strTaskName} ${str}\n${$.showLog ? data : ''}`);
+            }
+          } catch (e) {
+            $.logErr(e, resp);
+          } finally {
+            resolve();
           }
-          console.log(`【领每日任务奖励】${strTaskName} ${str}\n${$.showLog ? data : ''}`);
-        }
-      } catch (e) {
-        $.logErr(e, resp);
-      } finally {
-        resolve();
-      }
-    })
+        })
+        break
+      case 'story/ActTaskAward':
+        $.get(taskUrl(function_path), (err, resp, data) => {
+          try {
+            if (err) {
+              console.log(`${JSON.stringify(err)}`)
+              console.log(`${$.name} awardActTask API请求失败，请检查网路重试`)
+            } else {
+              data = JSON.parse(data);
+              if (data.iRet === 0 || data.sErrMsg === 'success') {
+                console.log(`【🐮牛牛任务】开启宝箱成功：获得财富 ¥ ${data.Data.ddwBigReward}\n`)
+              } else {
+                console.log(`【🐮牛牛任务】开启宝箱失败：${data.sErrMsg}\n`)
+              }
+            }
+          } catch (e) {
+            $.logErr(e, resp);
+          } finally {
+            resolve();
+          }
+        })
+        break
+      default:
+        break
+    }
   })
 }
 
@@ -1050,10 +1173,10 @@ function getUserInfo(showInvite = true) {
             console.log(`\n当前等级:${dwLandLvl},金币:${ddwCoinBalance},财富值:${ddwRichBalance}\n`)
           }
           if (showInvite && strMyShareId) {
-            console.log(`财富岛好友互助码每次运行都变化,旧的可继续使用`);
-            console.log(`\n【京东账号${$.index} ${$.UserName} 的${$.name}好友互助码】${strMyShareId}\n\n`);
-            submitCode(strMyShareId);
+            console.log(`财富岛好友互助码每次运行都变化`);
+            console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${strMyShareId}\n\n`);
             $.shareCodes.push(strMyShareId)
+            submitCode(strMyShareId);
           }
           $.info = {
             ...$.info,
@@ -1497,9 +1620,9 @@ function requireConfig() {
 function TotalBean() {
   return new Promise(async resolve => {
     const options = {
-      url: "https://me-api.jd.com/user_new/info/GetJDUserInfoUnion",
+      url: "https://wq.jd.com/user_new/info/GetJDUserInfoUnion?sceneval=2",
       headers: {
-        Host: "me-api.jd.com",
+        Host: "wq.jd.com",
         Accept: "*/*",
         Connection: "keep-alive",
         Cookie: cookie,
@@ -1516,11 +1639,11 @@ function TotalBean() {
         } else {
           if (data) {
             data = JSON.parse(data);
-            if (data['retcode'] === "1001") {
+            if (data['retcode'] === 1001) {
               $.isLogin = false; //cookie过期
               return;
             }
-            if (data['retcode'] === "0" && data.data && data.data.hasOwnProperty("userInfo")) {
+            if (data['retcode'] === 0 && data.data && data.data.hasOwnProperty("userInfo")) {
               $.nickName = data.data.userInfo.baseInfo.nickname;
             }
           } else {
