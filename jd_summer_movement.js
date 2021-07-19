@@ -7,7 +7,7 @@
 const $ = new Env('燃动夏季');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
-const helpAuthorFlag = true;//是否助力作者SH  true 助力，false 不助力
+const helpAuthorFlag = false;//是否助力作者SH  true 助力，false 不助力
 const https = require('https');
 const fs = require('fs/promises');
 const { R_OK } = require('fs').constants;
@@ -64,7 +64,7 @@ class MovementFaker {
   }
 }
 
-$.inviteList = ['HcmphLbwLg73eYHLF9Nm0uFhusphNoZddN2PHfKc_E6RIoyUqNqwAlJo4SEnJ4AClAzIyCACXbo3XL7I0wxIsQ'];
+$.inviteList = [];
 $.byInviteList = [];
 let uuid = 8888;
 let cookiesArr = [];
