@@ -101,30 +101,7 @@ class getJDCookie(object):
     # 获取cookie
     def getCookie(self):
         global cookies
-        ckfile = self.getckfile()
         try:
-            if os.path.exists(ckfile):
-                with open(ckfile, "r", encoding="utf-8") as f:
-                    cks = f.read()
-                    f.close()
-                if 'pt_key=' in cks and 'pt_pin=' in cks:
-                    r = re.compile(r"pt_key=.*?pt_pin=.*?;", re.M | re.S | re.I)
-                    cks = r.findall(cks)
-                    if len(cks) > 0:
-                        if 'JDCookies.txt' in ckfile:
-                            printT("当前获取使用 JDCookies.txt 的cookie")
-                        cookies = ''
-                        for i in cks:
-                            if 'pt_key=xxxx' in i:
-                                pass
-                            else:
-                                cookies += i
-                        return
-            else:
-                with open(pwd + 'JDCookies.txt', "w", encoding="utf-8") as f:
-                    cks = "#多账号换行，以下示例：（通过正则获取此文件的ck，理论上可以自定义名字标记ck，也可以随意摆放ck）\n账号1【Curtinlv】cookie1;\n账号2【TopStyle】cookie2;"
-                    f.write(cks)
-                    f.close()
             if "JD_COOKIE" in os.environ:
                 if len(os.environ["JD_COOKIE"]) > 10:
                     cookies = os.environ["JD_COOKIE"]
