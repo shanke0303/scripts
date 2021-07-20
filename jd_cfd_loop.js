@@ -110,7 +110,7 @@ async function querystorageroom() {
                 strTypeCnt += `${bags[j]}|`
               }
             }
-            await $.wait(getRandomNumberByRange(1000, 1100))
+            await $.wait(Math.floor(Math.random() * (1100 - 1000) + 1000))
             await sellgoods(`strTypeCnt=${strTypeCnt}&dwSceneId=1`)
           } else {
             console.log(`背包是空的，快去捡贝壳吧\n`)
