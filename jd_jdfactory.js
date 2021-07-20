@@ -93,12 +93,6 @@ async function jdFactory() {
     if ($.newUser === 1) return
     await jdfactory_collectElectricity();//收集产生的电量
     await jdfactory_getTaskDetail();
-    const submitCodeRes = await submitCode();
-    if (submitCodeRes && submitCodeRes.code === 200) {
-        console.log(`🏭东东工厂-互助码提交成功！🏭`);
-    }else if (submitCodeRes && submitCodeRes.code === 300) {
-        console.log(`🏭东东工厂-互助码已提交！🏭`);
-    }
     await doTask();
     await algorithm();//投入电力逻辑
     await showMsg();
@@ -452,10 +446,16 @@ function jdfactory_getTaskDetail() {
             data = JSON.parse(data);
             if (data.data.bizCode === 0) {
               $.taskVos = data.data.result.taskVos;//任务列表
-              $.taskVos.map(item => {
+              $.taskVos.map(async item => {
                 if (item.taskType === 14) {
                   console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${item.assistTaskDetailVo.taskToken}\n`)
                   myInviteCode = item.assistTaskDetailVo.taskToken;
+                  const submitCodeRes = await submitCode();
+                  if (submitCodeRes && submitCodeRes.code === 200) {
+                      console.log(`🏭东东工厂-互助码提交成功！🏭`);
+                  }else if (submitCodeRes.code === 300) {
+                      console.log(`🏭东东工厂-互助码已提交！🏭`);
+                  }
                 }
               })
             }
@@ -669,6 +669,8 @@ function submitCode() {
         resolve(data);
       }
     })
+    await $.wait(15000);
+    resolve()
   })
 }
 //格式化助力码
