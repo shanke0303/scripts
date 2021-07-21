@@ -355,9 +355,9 @@ if "QYWX_AM" in os.environ:
         print("已获取并使用Env环境 QYWX_AM")
 # 获取企业微信应用推送 QYWX_AM
 if "BARK" in os.environ:
-    if len(os.environ["BARK"]) > 1:
-        BARK = os.environ["BARK"]
-        print("已获取并使用Env环境 BARK")
+    if len(os.environ["BARK_PUSH"]) > 1:
+        BARK = os.environ["BARK_PUSH"]
+        print("已获取并使用Env环境 BARK_PUSH")
 # 判断参数是否存在
 try:
     cookies
