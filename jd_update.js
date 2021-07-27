@@ -12,7 +12,7 @@ exec("cd /ql/repo/shanke0303_scripts; git fetch --all; git reset --hard origin/m
 })
 
 if (__dirname.indexOf('/ql/') > -1) {
-  exec('ql repo https://github.com/shanke0303/scripts.git "jd_|jx_|jddj_|getCookie|smzdm_mission" "activity|backUp|jd_jxmcToken" "^jd[^_]|USER|Env|tg-cli|sign_graphics_validate|JDSignValidator|JDJRValidator|JDJRValidator_Pure|MoveMentFaker|ZooFaker_Necklace"', (error, stdout, stderr) => {
+  exec('ql repo https://github.com/shanke0303/scripts.git "jd_|jx_|jddj_|getCookie|smzdm_mission" "activity|backUp|jd_jxmcToken" "^jd[^_]|USER|Env|tg-cli|sign_graphics_validate|JDSignValidator|JDJRValidator|JDJRValidator_Pure|MoveMentFaker|ZooFaker_Necklace|jd_jxmcToken"', (error, stdout, stderr) => {
     console.log(1, error)
     console.log(2, stdout.trim())
     console.log(3, stderr)
