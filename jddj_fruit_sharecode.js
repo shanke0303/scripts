@@ -56,7 +56,7 @@ async function findAndSubmitShareCode() {
         let shareCode
         rl.on('line', (line) => {
             // 处理行。
-            if (line.startsWith('好友互助码:JD_')) {
+            if (line.startsWith('京东到家果园互助码:JD_')) {
                 shareCode = line.split(':')[1]
             }
         });
