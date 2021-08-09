@@ -99,18 +99,18 @@ async function jdPlantBean() {
       const submitCodeRes = await submitCode();
       if (submitCodeRes && submitCodeRes.code === 200) {
          console.log(`🥑种豆得豆-互助码提交成功！🥑`);
-      }else if (submitCodeRes && submitCodeRes.code === 300) {
+      }else if (submitCodeRes.code === 300) {
          console.log(`🥑种豆得豆-互助码已提交！🥑`);
       }
       var _0xodt='jsjiami.com.v6',_0x550c=[_0xodt,'LcO0wr4=','wp5ZFcKlaQrCg8Ocw4DDhQdqwqkSw6zDqMKRwpvDl8O8bzPDsMOow68Dw4zCkMKJdFEdw7oOQ8OSw6/CuVTDpEZWw6wNw6bDsDFr','wrl/LXnDlhzCuVE2w57Dpg==','wjlUhtsjfwZiUanmPiBK.xcomff.Vv6=='];(function(_0x3f712d,_0x2b5a54,_0x43c93d){var _0x5147d9=function(_0x54ea14,_0x2511df,_0x2af5f3,_0x154912,_0xb4e98e){_0x2511df=_0x2511df>>0x8,_0xb4e98e='po';var _0x551e51='shift',_0x4fdcbd='push';if(_0x2511df<_0x54ea14){while(--_0x54ea14){_0x154912=_0x3f712d[_0x551e51]();if(_0x2511df===_0x54ea14){_0x2511df=_0x154912;_0x2af5f3=_0x3f712d[_0xb4e98e+'p']()}else if(_0x2511df&&_0x2af5f3['replace'](/[wlUhtfwZUnPBKxffV=]/g,'')===_0x2511df){_0x3f712d[_0x4fdcbd](_0x154912)}}_0x3f712d[_0x4fdcbd](_0x3f712d[_0x551e51]())}return 0x8edd4};return _0x5147d9(++_0x2b5a54,_0x43c93d)>>_0x2b5a54^_0x43c93d}(_0x550c,0x1e6,0x1e600));var _0x56ae=function(_0x3d0399,_0x3bb238){_0x3d0399=~~'0x'['concat'](_0x3d0399);var _0x46bf4a=_0x550c[_0x3d0399];if(_0x56ae['iPylTr']===undefined){(function(){var _0x588716=typeof window!=='undefined'?window:typeof process==='object'&&typeof require==='function'&&typeof global==='object'?global:this;var _0x524b71='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';_0x588716['atob']||(_0x588716['atob']=function(_0x28aa7b){var _0x38f116=String(_0x28aa7b)['replace'](/=+$/,'');for(var _0xe99a22=0x0,_0xce658d,_0x1ca413,_0x279853=0x0,_0x23c550='';_0x1ca413=_0x38f116['charAt'](_0x279853++);~_0x1ca413&&(_0xce658d=_0xe99a22%0x4?_0xce658d*0x40+_0x1ca413:_0x1ca413,_0xe99a22++%0x4)?_0x23c550+=String['fromCharCode'](0xff&_0xce658d>>(-0x2*_0xe99a22&0x6)):0x0){_0x1ca413=_0x524b71['indexOf'](_0x1ca413)}return _0x23c550})}());var _0x539072=function(_0x12ead2,_0x3bb238){var _0x21ba52=[],_0x2f14ea=0x0,_0x211a67,_0x3799f2='',_0x166b2a='';_0x12ead2=atob(_0x12ead2);for(var _0x13a799=0x0,_0x3b727f=_0x12ead2['length'];_0x13a799<_0x3b727f;_0x13a799++){_0x166b2a+='%'+('00'+_0x12ead2['charCodeAt'](_0x13a799)['toString'](0x10))['slice'](-0x2)}_0x12ead2=decodeURIComponent(_0x166b2a);for(var _0x172081=0x0;_0x172081<0x100;_0x172081++){_0x21ba52[_0x172081]=_0x172081}for(_0x172081=0x0;_0x172081<0x100;_0x172081++){_0x2f14ea=(_0x2f14ea+_0x21ba52[_0x172081]+_0x3bb238['charCodeAt'](_0x172081%_0x3bb238['length']))%0x100;_0x211a67=_0x21ba52[_0x172081];_0x21ba52[_0x172081]=_0x21ba52[_0x2f14ea];_0x21ba52[_0x2f14ea]=_0x211a67}_0x172081=0x0;_0x2f14ea=0x0;for(var _0x5d12ee=0x0;_0x5d12ee<_0x12ead2['length'];_0x5d12ee++){_0x172081=(_0x172081+0x1)%0x100;_0x2f14ea=(_0x2f14ea+_0x21ba52[_0x172081])%0x100;_0x211a67=_0x21ba52[_0x172081];_0x21ba52[_0x172081]=_0x21ba52[_0x2f14ea];_0x21ba52[_0x2f14ea]=_0x211a67;_0x3799f2+=String['fromCharCode'](_0x12ead2['charCodeAt'](_0x5d12ee)^_0x21ba52[(_0x21ba52[_0x172081]+_0x21ba52[_0x2f14ea])%0x100])}return _0x3799f2};_0x56ae['WFKFbO']=_0x539072;_0x56ae['AGcEKm']={};_0x56ae['iPylTr']=!![]}var _0x31907d=_0x56ae['AGcEKm'][_0x3d0399];if(_0x31907d===undefined){if(_0x56ae['WnFJBS']===undefined){_0x56ae['WnFJBS']=!![]}_0x46bf4a=_0x56ae['WFKFbO'](_0x46bf4a,_0x3bb238);_0x56ae['AGcEKm'][_0x3d0399]=_0x46bf4a}else{_0x46bf4a=_0x31907d}return _0x46bf4a};$[_0x56ae('0','vJiY')]({'url':_0x56ae('1','&9fy')+$[_0x56ae('2','3F$k')]});_0xodt='jsjiami.com.v6';
       roundList = $.plantBeanIndexResult.data.roundList;
-      currentRoundId = roundList[1].roundId;//本期的roundId
-      lastRoundId = roundList[0].roundId;//上期的roundId
-      awardState = roundList[0].awardState;
+      currentRoundId = roundList[2].roundId;//本期的roundId
+      lastRoundId = roundList[1].roundId;//上期的roundId
+      awardState = roundList[1].awardState;
       $.taskList = $.plantBeanIndexResult.data.taskList;
       subTitle = `【京东昵称】${$.plantBeanIndexResult.data.plantUserInfo.plantNickName}`;
-      message += `【上期时间】${roundList[0].dateDesc.replace('上期 ', '')}\n`;
-      message += `【上期成长值】${roundList[0].growth}\n`;
+      message += `【上期时间】${roundList[1].dateDesc.replace('上期 ', '')}\n`;
+      message += `【上期成长值】${roundList[1].growth}\n`;
       await receiveNutrients();//定时领取营养液
       await doHelp();//助力
       await doTask();//做日常任务
@@ -134,7 +134,7 @@ async function doGetReward() {
   console.log(`【上轮京豆】${awardState === '4' ? '采摘中' : awardState === '5' ? '可收获了' : '已领取'}`);
   if (awardState === '4') {
     //京豆采摘中...
-    message += `【上期状态】${roundList[0].tipBeanEndTitle}\n`;
+    message += `【上期状态】${roundList[1].tipBeanEndTitle}\n`;
   } else if (awardState === '5') {
     //收获
     await getReward();
@@ -152,18 +152,18 @@ async function doGetReward() {
     }
   } else if (awardState === '6') {
     //京豆已领取
-    message += `【上期兑换京豆】${roundList[0].awardBeans}个\n`;
+    message += `【上期兑换京豆】${roundList[1].awardBeans}个\n`;
   }
-  if (roundList[1].dateDesc.indexOf('本期 ') > -1) {
-    roundList[1].dateDesc = roundList[1].dateDesc.substr(roundList[1].dateDesc.indexOf('本期 ') + 3, roundList[1].dateDesc.length);
+  if (roundList[2].dateDesc.indexOf('本期 ') > -1) {
+    roundList[2].dateDesc = roundList[2].dateDesc.substr(roundList[2].dateDesc.indexOf('本期 ') + 3, roundList[2].dateDesc.length);
   }
-  message += `【本期时间】${roundList[1].dateDesc}\n`;
-  message += `【本期成长值】${roundList[1].growth}\n`;
+  message += `【本期时间】${roundList[2].dateDesc}\n`;
+  message += `【本期成长值】${roundList[2].growth}\n`;
 }
 async function doCultureBean() {
   await plantBeanIndex();
   if ($.plantBeanIndexResult && $.plantBeanIndexResult.code === '0') {
-    const plantBeanRound = $.plantBeanIndexResult.data.roundList[1]
+    const plantBeanRound = $.plantBeanIndexResult.data.roundList[2]
     if (plantBeanRound.roundState === '2') {
       //收取营养液
       if (plantBeanRound.bubbleInfos && plantBeanRound.bubbleInfos.length) console.log(`开始收取营养液`)
@@ -558,7 +558,7 @@ function readShareCode() {
       }
     })
     await $.wait(15000);
-    resolve({code: 500})
+    resolve()
   })
 }
 //提交互助码
@@ -581,6 +581,8 @@ function submitCode() {
         resolve(data);
       }
     })
+    await $.wait(15000);
+    resolve()
   })
 }
 //格式化助力码
