@@ -7,6 +7,8 @@ const got = require('got');
 const TgCli = require('./tg-cli')
 const tgCli = new TgCli()
 
+const LOG_DIR = '/ql/log/code'
+
 const shareCodeBot = process.env.SHARE_CODE_BOT
 if (!shareCodeBot) {
     console.log(`未设置提交机器人环境变量($${SHARE_CODE_BOT})`);
@@ -21,7 +23,7 @@ let usernames = []
 
 
 async function submit() {
-    getShareCodes()
+    await getShareCodes()
     getUsernames()
 
     console.log('惊喜财富岛互助码:', jxCfdSharecodes);
@@ -83,54 +85,62 @@ async function submit() {
     process.exit(0)
 }
 
+async function getShareCodes() {
+    try {
+        // 查找运行日志
+        fs.accessSync(LOG_DIR, fs.constants.F_OK | fs.constants.R_OK);
+        console.log(`开始查找${LOG_DIR}目录下的运行日志...`);
+        const files = fs.readdirSync(LOG_DIR, { withFileTypes: false })
+        let lastestLogFile
+        files.forEach(f => {
+            if (f.endsWith('.log')) {
+                const stats = fs.statSync(path.join(LOG_DIR, f))
+                const creatTime = new Date(stats.ctime) //创建时间
+                // const updateTime = new Date(data.mtime) //修改时间
+                // const activeTime = new Date(data.atime) //访问时间
+                const logFile = {
+                    name: f,
+                    time: creatTime
+                }
+                if (!lastestLogFile || logFile.time > lastestLogFile.time) {
+                    lastestLogFile = logFile
+                }
+            }
+        })
 
-
-function getShareCodes() {
-    // 惊喜财富岛互助码
-    if (process.env.JDCFD_SHARECODES) {
-        if (process.env.JDCFD_SHARECODES.indexOf('&') > -1) {
-            console.log(`您的东东农场互助码选择的是用&隔开\n`)
-            jxCfdSharecodes = process.env.JDCFD_SHARECODES.split('&');
-        } else if (process.env.JDCFD_SHARECODES.indexOf('\n') > -1) {
-            console.log(`您的东东农场互助码选择的是用换行隔开\n`)
-            jxCfdSharecodes = process.env.JDCFD_SHARECODES.split('\n');
-        } else {
-            jxCfdSharecodes = process.env.JDCFD_SHARECODES.split();
+        if (!lastestLogFile) {
+            console.log('未找到运行日志')
+            return
         }
-    } else {
-        console.log(`您环境变量(JDCFD_SHARECODES)里面未设置`)
-    }
-
-    // 东东农场互助码
-    if (process.env.FRUITSHARECODES) {
-        if (process.env.FRUITSHARECODES.indexOf('&') > -1) {
-            console.log(`您的东东农场互助码选择的是用&隔开\n`)
-            FruitShareCodes = process.env.FRUITSHARECODES.split('&');
-        } else if (process.env.FRUITSHARECODES.indexOf('\n') > -1) {
-            console.log(`您的东东农场互助码选择的是用换行隔开\n`)
-            FruitShareCodes = process.env.FRUITSHARECODES.split('\n');
-        } else {
-            FruitShareCodes = process.env.FRUITSHARECODES.split();  
-        }
-    } else {
-        console.log(`您环境变量(FRUITSHARECODES)里面未设置`)
-    }
-
-    // 京喜工厂互助码
-    if (process.env.DREAM_FACTORY_SHARE_CODES) {
-        if (process.env.DREAM_FACTORY_SHARE_CODES.indexOf('&') > -1) {
-            console.log(`您的互助码选择的是用&隔开\n`)
-            shareCodes = process.env.DREAM_FACTORY_SHARE_CODES.split('&');
-        } else if (process.env.DREAM_FACTORY_SHARE_CODES.indexOf('\n') > -1) {
-            console.log(`您的互助码选择的是用换行隔开\n`)
-            shareCodes = process.env.DREAM_FACTORY_SHARE_CODES.split('\n');
-        } else {
-            shareCodes = process.env.DREAM_FACTORY_SHARE_CODES.split();
-        }
-    } else {
-        console.log(`您环境变量(DREAM_FACTORY_SHARE_CODES)里面未设置`)
+        console.log('找到最新的运行日志: ', lastestLogFile.name)
+        console.log('开始从日志中查找邀请码...')
+        // 逐行读取  
+        const rl = createInterface({
+            input: createReadStream(path.join(LOG_DIR, lastestLogFile.name)),
+            crlfDelay: Infinity
+        });
+        
+        const reg = /'(.+?)'/
+        rl.on('line', (line) => {
+            // 处理行。
+            if (line.startsWith('MyCfd')) {
+                const sc = reg.exec(line)[1]
+                if (sc) jxCfdSharecodes.push(sc)
+            } else if (line.startsWith('MyFruit')) {
+                const sc = reg.exec(line)[1]
+                if (sc) FruitShareCodes.push(sc)
+            } else if (line.startsWith('MyDreamFactory')) {
+                const sc = reg.exec(line)[1]
+                if (sc) shareCodes.push(sc)
+            }
+        });
+    
+        await once(rl, 'close');
+    } catch (err) {
+      console.error(err);
     }
 }
+
 function getUsernames() {
     // 用户名
     if (process.env.JD_USERNAME) {
