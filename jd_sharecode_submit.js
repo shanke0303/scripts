@@ -94,7 +94,7 @@ function getCodeInline(line) {
     const code = ''
     if (line) {
        const tmp = /'(.+?)'/.exec(line)
-       if (tmp && tmp.length > 2) {
+       if (tmp && tmp.length >= 2) {
         code = tmp[1]
        }
     }
