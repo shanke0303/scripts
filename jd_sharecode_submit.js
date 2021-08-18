@@ -91,7 +91,7 @@ async function start() {
 
 function getCodeInline(line) {
     console.log('Line Found:', line);
-    const code = ''
+    let code = ''
     if (line) {
        const tmp = /'(.+?)'/.exec(line)
        if (tmp && tmp.length >= 2) {
