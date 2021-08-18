@@ -126,8 +126,7 @@ async function getShareCodes() {
             input: createReadStream(path.join(LOG_DIR, lastestLogFile.name)),
             crlfDelay: Infinity
         });
-        
-        const reg = /'(.+?)'/
+
         rl.on('line', (line) => {
             // 处理行。
             if (line.startsWith('MyCfd')) {
@@ -151,7 +150,7 @@ async function getShareCodes() {
 function getCodeInline(line) {
     const code = ''
     if (line) {
-       const tmp = reg.exec(line)
+       const tmp = /'(.+?)'/.exec(line)
        if (tmp && tmp.length > 2) {
         code = tmp[1]
        }
