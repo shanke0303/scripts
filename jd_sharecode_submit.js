@@ -3,6 +3,13 @@
  * 
  */
 
+
+ const { once } = require('events');
+ const { createReadStream } = require('fs');
+ const { createInterface } = require('readline');
+ const fs = require('fs');
+ const path = require('path');
+
 const got = require('got');
 const TgCli = require('./tg-cli')
 const tgCli = new TgCli()
