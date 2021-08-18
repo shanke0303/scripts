@@ -131,13 +131,13 @@ async function getShareCodes() {
         rl.on('line', (line) => {
             // 处理行。
             if (line.startsWith('MyCfd')) {
-                const sc = reg.exec(line)[1]
+                const sc = getCodeInline(line)
                 if (sc) jxCfdSharecodes.push(sc)
             } else if (line.startsWith('MyFruit')) {
-                const sc = reg.exec(line)[1]
+                const sc = getCodeInline(line)
                 if (sc) FruitShareCodes.push(sc)
             } else if (line.startsWith('MyDreamFactory')) {
-                const sc = reg.exec(line)[1]
+                const sc = getCodeInline(line)
                 if (sc) shareCodes.push(sc)
             }
         });
@@ -146,6 +146,17 @@ async function getShareCodes() {
     } catch (err) {
       console.error(err);
     }
+}
+
+function getCodeInline(line) {
+    const code = ''
+    if (line) {
+       const tmp = reg.exec(line)
+       if (tmp && tmp.length > 2) {
+        code = tmp[1]
+       }
+    }
+    return code
 }
 
 function getUsernames() {
