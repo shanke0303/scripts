@@ -1,5 +1,5 @@
 /**
- 店铺签到
+ 店铺签到 https://github.com/wulove/my_scripts/blob/master/jd_dpqd.js
  cron 8 0,22 * * * jd_dpqd.js
  */
 const $ = new Env('店铺签到');
