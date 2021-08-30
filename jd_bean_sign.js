@@ -15,15 +15,24 @@ const exec = require('child_process').execSync
 const fs = require('fs')
 const download = require('download');
 let resultPath = "./result.txt";
-let JD_DailyBonusPath = "./JD_DailyBonus.js";
-let outPutUrl = './';
+let JD_DailyBonusPath = "./utils/JD_DailyBonus.js";
+let outPutUrl = './utils';
 let NodeSet = 'CookieSet.json';
-let cookiesArr = [], cookie = '', allMessage = '';
+let cookiesArr = [], cookie = '', allMessage = '', jrBodyArr = [], jrBody = '';
 
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
   })
+  if (process.env.JD_BEAN_SIGN_BODY) {
+    if (process.env.JD_BEAN_SIGN_BODY.indexOf('&') > -1) {
+      jrBodyArr = process.env.JD_BEAN_SIGN_BODY.split('&');
+    } else if (process.env.JD_BEAN_SIGN_BODY.indexOf('\n') > -1) {
+      jrBodyArr = process.env.JD_BEAN_SIGN_BODY.split('\n');
+    } else {
+      jrBodyArr = [process.env.JD_BEAN_SIGN_BODY];
+    }
+  }
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 }
 !(async() => {
@@ -37,11 +46,11 @@ if ($.isNode()) {
   // await downFile();
   if (!await fs.existsSync(JD_DailyBonusPath)) {
     console.log(`\nJD_DailyBonus.js 文件不存在，停止执行${$.name}\n`);
-    await notify.sendNotify($.name, `本次执行${$.name}失败，JD_DailyBonus.js 文件下载异常，详情请查看日志`)
+    await notify.sendNotify($.name, `本次执行${$.name}失败，JD_DailyBonus.js 文件下载异常，详情请查看日志`, `\n\n本通知 By：https://github.com/he1pu/JDHelp`)
     return
   }
   const content = await fs.readFileSync(JD_DailyBonusPath, 'utf8')
-  for (let i =0; i < cookiesArr.length; i++) {
+  for (let i = 0; i < cookiesArr.length; i++) {
     cookie = cookiesArr[i];
     if (cookie) {
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
@@ -53,9 +62,20 @@ if ($.isNode()) {
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
         if ($.isNode()) {
-          await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+          await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`,`\n\n本通知 By：https://github.com/he1pu/JDHelp`);
         }
         continue
+      }
+      jrBody = ''
+      if (jrBodyArr && jrBodyArr.length) {
+        for (let key in Object.keys(jrBodyArr)) {
+          let vo = JSON.parse(jrBodyArr[key])
+          if (decodeURIComponent(vo.pin) == $.UserName) {
+            jrBody = vo.body || ''
+          }
+        }
+      } else {
+        jrBody = ''
       }
       await changeFile(content);
       await execSign();
@@ -64,7 +84,7 @@ if ($.isNode()) {
   //await deleteFile(JD_DailyBonusPath);//删除下载的JD_DailyBonus.js文件
   if ($.isNode() && allMessage && process.env.JD_BEAN_SIGN_NOTIFY_SIMPLE === 'true') {
     $.msg($.name, '', allMessage);
-    await notify.sendNotify($.name, allMessage)
+    await notify.sendNotify($.name, allMessage, `\n\n本通知 By：https://github.com/he1pu/JDHelp`)
   }
 })()
     .catch((e) => $.logErr(e))
@@ -110,11 +130,12 @@ async function execSign() {
     if (BarkContent) {
       allMessage += `【京东号 ${$.index}】: ${$.nickName || $.UserName}\n【签到时间】:  ${$.beanSignTime}\n${BarkContent}${$.index !== cookiesArr.length ? '\n\n' : ''}`;
       if (!process.env.JD_BEAN_SIGN_NOTIFY_SIMPLE || (process.env.JD_BEAN_SIGN_NOTIFY_SIMPLE && process.env.JD_BEAN_SIGN_NOTIFY_SIMPLE !== 'true')) {
-        await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName || $.UserName}`, `【签到号 ${$.index}】: ${$.nickName || $.UserName}\n【签到时间】:  ${$.beanSignTime}\n${BarkContent}`);
+        await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName || $.UserName}`, `【签到号 ${$.index}】: ${$.nickName || $.UserName}\n【签到时间】:  ${$.beanSignTime}\n${BarkContent}`, `\n\n本通知 By：https://github.com/he1pu/JDHelp`);
       }
     }
     //运行完成后，删除下载的文件
     await deleteFile(resultPath);//删除result.txt
+    await deleteFile('./utils/CookieSet.json')
     console.log(`\n\n*****************${new Date(new Date().getTime()).toLocaleString('zh', {hour12: false})} 京东账号${$.index} ${$.nickName || $.UserName} ${$.name}完成*******************\n\n`);
   } catch (e) {
     console.log("京东签到脚本执行异常:" + e);
@@ -151,7 +172,7 @@ async function downFile () {
 
 async function changeFile (content) {
   console.log(`开始替换变量`)
-  let newContent = content.replace(/var Key = '.*'/, `var Key = '${cookie}'`);
+  let newContent = content.replace(/var OtherKey = `.*`/, `var OtherKey = \`[{"cookie":"${cookie}","jrBody":"${jrBody}"}]\``);
   newContent = newContent.replace(/const NodeSet = 'CookieSet.json'/, `const NodeSet = '${NodeSet}'`)
   if (process.env.JD_BEAN_STOP && process.env.JD_BEAN_STOP !== '0') {
     newContent = newContent.replace(/var stop = '0'/, `var stop = '${process.env.JD_BEAN_STOP}'`);
